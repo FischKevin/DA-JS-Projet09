@@ -2,14 +2,20 @@
  * @jest-environment jsdom
  */
 
+import mockedBills from '../__mocks__/store.js';
+import { localStorageMock } from '../__mocks__/localStorage.js';
 import { screen, waitFor, fireEvent, wait } from '@testing-library/dom';
 import BillsUI from '../views/BillsUI.js';
 import { bills } from '../fixtures/bills.js';
 import { ROUTES_PATH } from '../constants/routes.js';
-import { localStorageMock } from '../__mocks__/localStorage.js';
 import router from '../app/Router.js';
 import Bills from '../containers/Bills.js';
-import mockedBills from '../__mocks__/store.js';
+import { formatDate, formatStatus } from '../app/format.js';
+
+jest.mock('../app/format.js', () => ({
+  formatDate: jest.fn(),
+  formatStatus: jest.fn(),
+}));
 
 describe('Given I am connected as an employee', () => {
   describe('When I am on Bills Page', () => {
@@ -98,5 +104,105 @@ describe('Given I am connected as an employee', () => {
     // Simulate a click on the first 'eye' icon and verify if the event listener was called
     iconEye[0].click();
     expect(myBillsInstance.handleClickIconEye).toHaveBeenCalled();
+  });
+});
+
+// Test suite for getBills
+describe('Given I am connected as an employee', () => {
+  describe('When I call getBills', () => {
+    test('Then it should fetch bills from the store', async () => {
+      // Creating a mock document object with necessary functions
+      // This mimics the browser's document object for testing environment
+      const documentMock = {
+        querySelector: jest.fn().mockReturnValue({
+          addEventListener: jest.fn(),
+        }),
+        querySelectorAll: jest.fn().mockReturnValue([
+          {
+            addEventListener: jest.fn(),
+          },
+        ]),
+        createElement: jest.fn().mockReturnValue({}),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        body: {
+          appendChild: jest.fn(),
+          innerHTML: '',
+        },
+      };
+
+      // Mocking the store's list function to resolve with predefined bills
+      const listMock = jest.fn().mockResolvedValue(bills);
+
+      // Creating a mock store object
+      const storeMock = {
+        bills: () => ({
+          list: listMock,
+        }),
+      };
+
+      // Instantiating Bills class with mock objects
+      // This allows us to test Bills class behavior without relying on the actual browser environment or a real store
+      const myBillsInstance = new Bills({
+        document: documentMock,
+        onNavigate: jest.fn(),
+        store: storeMock,
+        localStorage: localStorageMock,
+      });
+
+      // Calling getBills method and waiting for it to finish
+      await myBillsInstance.getBills();
+
+      // Expecting the mock list function to have been called
+      // This checks if the Bills instance correctly calls the store's list method
+      expect(listMock).toHaveBeenCalled();
+    });
+  });
+
+  // Test catch part of getBills
+  describe('Given I am connected as an employee', () => {
+    describe('When I call getBills and there is corrupted data', () => {
+      test('Then it should handle the error and return unformatted date', async () => {
+        // Mock formatDate to simulate an error when formatting the date
+        formatDate.mockImplementation(() => {
+          throw new Error('Error formatting date');
+        });
+
+        // Create a corrupted bill
+        const corruptedBill = {
+          id: 'corruptedBillId',
+          date: 'corruptedDate',
+          status: 'corruptedStatus',
+        };
+
+        // Mock store.bills().list to return a corrupted bill
+        const listMock = jest.fn().mockResolvedValue([corruptedBill]);
+
+        const storeMock = {
+          bills: () => ({
+            list: listMock,
+          }),
+        };
+
+        // Create an instance of Bills with necessary mocks
+        const myBillsInstance = new Bills({
+          document: window.document,
+          onNavigate: jest.fn(),
+          store: storeMock,
+          localStorage: localStorageMock,
+        });
+
+        // Execute getBills and capture the result
+        const result = await myBillsInstance.getBills();
+
+        // Check that the corrupted bill is returned with the unformatted date
+        expect(result[0].date).toBe(corruptedBill.date);
+        expect(result[0].status).toBe(formatStatus(corruptedBill.status));
+
+        // Restore original implementations of mocked functions
+        formatDate.mockRestore();
+        formatStatus.mockRestore();
+      });
+    });
   });
 });
