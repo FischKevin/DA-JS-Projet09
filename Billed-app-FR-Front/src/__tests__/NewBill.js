@@ -11,35 +11,42 @@ import mockedStore from '../__mocks__/store.js';
 // Mock the store for testing purposes
 jest.mock('../app/Store', () => mockedStore);
 
+let newBill, onNavigate;
+
+beforeEach(() => {
+  document.body.innerHTML = NewBillUI();
+  localStorage.setItem(
+    'user',
+    JSON.stringify({ type: 'Employee', email: 'a@a' })
+  );
+  onNavigate = jest.fn();
+  newBill = new NewBill({
+    document,
+    onNavigate,
+    store: mockedStore,
+    localStorage: window.localStorage,
+  });
+});
+
+afterEach(() => {
+  localStorage.clear();
+  document.body.innerHTML = '';
+});
+
 // Main test suite for NewBill functionality
 describe('Given I am an employee', () => {
   // Testing file change detection on NewBill page
   describe('When I am on NewBill Page', () => {
     test('Then it should detect change on file input', async () => {
-      const html = NewBillUI();
-      document.body.innerHTML = html;
-
-      localStorage.setItem(
-        'user',
-        JSON.stringify({ type: 'Employee', email: 'a@a' })
-      );
-      const onNavigate = jest.fn();
-      const newBillClass = new NewBill({
-        document,
-        onNavigate,
-        store: mockedStore,
-        localStorage,
-      });
-      const handleChangeFile1 = jest.fn((e) =>
-        newBillClass.handleChangeFile(e)
-      );
+      // Mock the handleChangeFile function to test file change detection
+      const handleChangeFile1 = jest.fn((e) => newBill.handleChangeFile(e));
       const imageInput = screen.getByTestId('file');
 
       // Check initial state of fileUrl, fileName, and billId
-      expect(newBillClass.fileUrl).toBeNull();
-      expect(newBillClass.fileName).toBeNull();
-      expect(newBillClass.billId).toBeNull();
-      expect(newBillClass.fileName).toBeFalsy();
+      expect(newBill.fileUrl).toBeNull();
+      expect(newBill.fileName).toBeNull();
+      expect(newBill.billId).toBeNull();
+      expect(newBill.fileName).toBeFalsy();
 
       // Add event listener and trigger file change event
       imageInput.addEventListener('change', handleChangeFile1);
@@ -54,27 +61,14 @@ describe('Given I am an employee', () => {
       expect(handleChangeFile1).toHaveBeenCalled();
 
       // Verify that variables have been changed
-      expect(newBillClass.fileUrl).not.toBeNull();
-      expect(newBillClass.fileName).not.toBeNull();
+      expect(newBill.fileUrl).not.toBeNull();
+      expect(newBill.fileName).not.toBeNull();
     });
   });
 
   // Testing for error message display on uploading non-allowed file format
   describe('When I am on NewBill Page and upload a non-allowed file', () => {
     test('Then the error message should be displayed', async () => {
-      document.body.innerHTML = NewBillUI();
-      localStorage.setItem(
-        'user',
-        JSON.stringify({ type: 'Employee', email: 'a@a' })
-      );
-      const onNavigate = jest.fn();
-      const newBill = new NewBill({
-        document,
-        onNavigate,
-        store: mockedStore,
-        localStorage,
-      });
-
       // Mock handleChangeFile function to test error message display
       const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
       const fileInput = screen.getByTestId('file');
@@ -101,20 +95,6 @@ describe('Given I am an employee', () => {
   // Testing form submission with valid data
   describe('When I submit the form with valid data', () => {
     test('Then the form should be submitted and navigate to Bills page', () => {
-      document.body.innerHTML = NewBillUI();
-
-      localStorage.setItem(
-        'user',
-        JSON.stringify({ type: 'Employee', email: 'a@a' })
-      );
-      const onNavigate = jest.fn();
-      const newBill = new NewBill({
-        document,
-        onNavigate,
-        store: mockedStore,
-        localStorage,
-      });
-
       // Mock the updateBill function to simulate form submission
       jest.spyOn(newBill, 'updateBill').mockImplementation(() => {});
 
@@ -148,15 +128,6 @@ describe('Given I am an employee', () => {
   // Testing the bill update functionality
   describe('When I update a bill', () => {
     test('Then the bill should be updated and navigate to Bills page', async () => {
-      // Initializing necessary variables and NewBill class instance
-      const onNavigate = jest.fn();
-      const newBill = new NewBill({
-        document,
-        onNavigate,
-        store: mockedStore,
-        localStorage: window.localStorage,
-      });
-
       // Mocking the store's bills().update function to simulate the update operation
       const updateSpy = jest
         .spyOn(mockedStore.bills(), 'update')
