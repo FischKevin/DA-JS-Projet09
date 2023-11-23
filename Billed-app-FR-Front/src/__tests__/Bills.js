@@ -210,8 +210,10 @@ describe('Given I am connected as an employee', () => {
   });
 });
 
+// Test suite for GET Bills API call
 describe('Given I am a user connected as Employee', () => {
   describe('When I navigate to Bills', () => {
+    // Test to verify if the bills are fetched from the API
     test('fetches bills from mock API GET', async () => {
       localStorage.setItem(
         'user',
@@ -227,7 +229,7 @@ describe('Given I am a user connected as Employee', () => {
       expect(screen.getAllByTestId('icon-eye')).toBeTruthy();
       expect(screen.getAllByTestId('icon-window')).toBeTruthy();
     });
-
+    // Test suite for GET Bills API call
     describe('When an error occurs on API', () => {
       beforeEach(() => {
         jest.spyOn(mockStore, 'bills');
@@ -247,6 +249,7 @@ describe('Given I am a user connected as Employee', () => {
         router();
       });
 
+      // Test for 404 error case
       test('fetches bills from an API and fails with 404 message error', async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
@@ -261,6 +264,7 @@ describe('Given I am a user connected as Employee', () => {
         expect(message).toBeTruthy();
       });
 
+      // Test for 500 error case
       test('fetches bills from an API and fails with 500 message error', async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
