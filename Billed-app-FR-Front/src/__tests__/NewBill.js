@@ -162,3 +162,47 @@ describe('Given I am an employee', () => {
     });
   });
 });
+
+// Testing the POST NewBill API call
+describe('Given I am on NewBill Page and submit a valid form', () => {
+  test('Then updateBill method should be called with right parameters', async () => {
+    // Preparing the form data
+    const inputData = mockedStore.bills().formData;
+
+    // Filling out the form fields
+    screen.getByTestId('expense-type').value = inputData.type;
+    screen.getByTestId('expense-name').value = inputData.name;
+    screen.getByTestId('datepicker').value = inputData.date;
+    screen.getByTestId('amount').value = inputData.amount;
+    screen.getByTestId('vat').value = inputData.vat;
+    screen.getByTestId('pct').value = inputData.pct;
+    screen.getByTestId('commentary').value = inputData.commentary;
+    newBill.fileUrl = inputData.fileUrl;
+    newBill.fileName = inputData.fileName;
+
+    // Mocking the updateBill method
+    jest.spyOn(newBill, 'updateBill').mockImplementation(() => {});
+
+    // Simulating form submission
+    const form = screen.getByTestId('form-new-bill');
+    fireEvent.submit(form);
+
+    // Verifying that updateBill method is called with correct parameters
+    expect(newBill.updateBill).toHaveBeenCalledWith({
+      email: 'a@a',
+      type: 'Transports',
+      name: 'Ticket to Paris',
+      date: '2021-07-01',
+      amount: 100,
+      vat: '20',
+      pct: 20,
+      commentary: 'Business trip to Paris',
+      fileUrl: newBill.fileUrl,
+      fileName: newBill.fileName,
+      status: 'pending',
+    });
+
+    // Clearing the mock
+    newBill.updateBill.mockRestore();
+  });
+});
