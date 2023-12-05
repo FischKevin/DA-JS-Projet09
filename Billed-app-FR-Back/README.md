@@ -1,107 +1,62 @@
 # Billapp backend
 
-================ FR ====================
+## How to launch the API locally
 
-## Comment lancer l'API en local:
-
-### Cloner le projet:
+### Clone the project
 ```
-git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Back.git
-```
-### Utilisez une version de node compatible
-Si vous utilisez une version récente de node sur votre ordinateur, il se peut qu'il y ai des erreurs lors de l'installation de certaines dépendances. Pour cela il est important de vous assurer que vous ayez une version de node compatible par exemple node v16 ou v18. 
-
-Voici quelques indications pour gérer les version de node sur votre ordinateur: 
-
-#### Sur Windows
-- Installer NVM pour windows (https://github.com/coreybutler/nvm-windows/tags)
-- changer la version de node pour une version compatible (par exemple 18.16.1) pous cela suivre les instruction de NVM pour windows : 
-    - `nvm install 18.16.1`
-    - `nvm use 18.16.1`
-- Ouvrir Powershell en mode administrateur
-- Entrer la commande «  Set-ExecutionPolicy RemoteSigned » pour pouvoir gérer l’execution de scripts dans powershell
-- Fermer toutes les instances de terminal
-- entrer la commande `npm install -g win-node-env` pour installer la gestion des variables d’environnement node pour window
-
-#### Sur Mac
-- Installer NVM (Node Version Manager) - https://github.com/nvm-sh/nvm
-- changer la version de node pour une version compatible (par exemple 18.16.1) pous cela suivre les instruction de NVM: 
-    - `nvm install 18.16.1`
-    - `nvm use 18.16.1`
-### Acceder au repertoire du projet :
-```
-cd Billed-app-FR-Back
+git clone https://github.com/FischKevin/DA-JS-Projet09.git
 ```
 
-### Installer les dépendances du projet :
+### Use a compatible version of node
 
-```
-npm install
-```
+If you are using a recent version of node on your computer, you may encounter errors when installing certain dependencies. Therefore, it's important to ensure that you have a compatible version of node, such as node v16 or v18.
 
-### Lancer l'API :
+Here are some tips for managing node versions on your computer:
 
-```
-npm run run:dev
-```
+#### On Windows
+* Install NVM for Windows (https://github.com/coreybutler/nvm-windows/tags)
+* Change the node version to a compatible one (for example, 18.16.1). Follow the instructions for NVM for Windows:
 
-### Accéder à l'API :
+``` nvm install 18.16.1 ```
 
-L'api est accessible sur le port `5678` en local, c'est à dire `http://localhost:5678`
+``` nvm use 18.16.1 ```
+* Open PowerShell in administrator mode
+* Enter the command ``` Set-ExecutionPolicy RemoteSigned ``` to manage script execution in PowerShell
+* Close all terminal instances
+* Enter the command npm install -g win-node-env to install node environment variable management for Windows
+#### On Mac
+* Install NVM (Node Version Manager) - https://github.com/nvm-sh/nvm
+* Change the node version to a compatible one (for example, 18.16.1). Follow the instructions for NVM:
 
-## Utilisateurs par défaut:
-
-### administrateur : 
-```
-utilisateur : admin@test.tld 
-mot de passe : admin
-```
-### employé :
-```
-utilisateur : employee@test.tld
-mot de passe : employee
-```
-
-
-================ EN ====================
-
-
-## How to run the API locally :
-
-
-### Clone the projet:
-```
-git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Back.git
-```
-
-### Go to the project directory :
+  ``` nvm install 18.16.1```
+  
+  ``` nvm use 18.16.1```
+        
+### Access the project directory
 ```
 cd Billed-app-FR-Back
 ```
 
-### Install project dependancies :
+### Install project dependencies
 
-```
-npm install
-```
+```npm install```
 
-### Run the API :
+### Launch the AP
 
-```
-npm run:dev
-```
 
-### Access to the PAI :
+```npm run run:dev```
 
-The API is locally available on port `5678`, go to `http://localhost:5678`
+### Access the API
 
-### administrateur : 
-```
-utilisateur : admin@company.tld 
-mot de passe : admin
-```
-### employé :
-```
-utilisateur : employee@company.tld
-mot de passe : employee
-```
+The API is accessible on local port 5678, i.e., http://localhost:5678
+
+### Default users
+Administrator:
+
+    Username: admin@test.tld
+    Password: admin
+
+Employee:
+
+    Username: employee@test.tld
+    Password: employee
